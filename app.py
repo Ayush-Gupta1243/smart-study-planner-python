@@ -29,36 +29,7 @@ st.set_page_config(
     page_title="Smart Study Planner AI",
     page_icon="🧠",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
-
-# ── Mobile Sidebar Toggle ─────────────────────────────────────────────────────
-st.markdown("""
-<style>
-#sb-toggle{
-position:fixed;top:14px;left:14px;z-index:999999;
-width:46px;height:46px;border:none;border-radius:12px;
-background:#6366f1;color:#fff;font-size:22px;cursor:pointer;
-box-shadow:0 4px 18px rgba(99,102,241,.45);
-}
-@media(min-width:769px){#sb-toggle{display:none;}}
-</style>
-<button id="sb-toggle">☰</button>
-<script>
-setTimeout(function(){
- const b=document.getElementById("sb-toggle");
- if(!b) return;
- b.onclick=function(){
-   const t=document.querySelector('[data-testid="collapsedControl"] button')||
-           document.querySelector('[data-testid="stSidebarCollapseButton"] button')||
-           document.querySelector('[aria-label="Open sidebar"]')||
-           document.querySelector('[aria-label="Close sidebar"]');
-   if(t){t.click();}
- };
-},800);
-</script>
-""",unsafe_allow_html=True)
-
 
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -76,13 +47,6 @@ html, body, [class*="css"] {
     background: linear-gradient(160deg, #070611 0%, #0d0b22 40%, #090d1f 100%);
     color: #e8e8ff;
 }
-
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background: rgba(15, 13, 31, 0.95) !important;
-    border-right: 1px solid rgba(255,255,255,0.07) !important;
-}
-[data-testid="stSidebar"] * { color: #e8e8ff !important; }
 
 /* Hide default streamlit header */
 #MainMenu, footer, header { visibility: hidden; }
@@ -210,6 +174,109 @@ hr { border-color: rgba(255,255,255,0.07) !important; }
     font-weight: 600 !important;
     color: rgba(255,255,255,0.8) !important;
 }
+
+/* ── Top header bar (replaces sidebar) ─────────────────────────────────── */
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.3rem 0 0.6rem;
+}
+.app-header-icon { font-size: 1.9rem; line-height: 1; flex-shrink: 0; }
+.app-header-title {
+    font-size: 1.15rem;
+    font-weight: 900;
+    background: linear-gradient(135deg,#818cf8,#a78bfa,#22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.2;
+}
+.app-header-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+    margin-top: 1px;
+}
+
+/* Menu popover trigger button — match app button style */
+[data-testid="stPopover"] button {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+    color: #e8e8ff !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+}
+[data-testid="stPopover"] button:hover {
+    background: rgba(99,102,241,0.15) !important;
+    border-color: rgba(99,102,241,0.4) !important;
+}
+
+/* Popover panel content (the mobile-friendly menu) */
+[data-testid="stPopoverBody"] {
+    max-height: 82vh;
+    overflow-y: auto;
+    min-width: 280px;
+}
+
+/* Tabs: allow horizontal scroll instead of squashing on narrow screens */
+.stTabs [data-baseweb="tab-list"] {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+}
+.stTabs [data-baseweb="tab-list"]::-webkit-scrollbar { height: 4px; }
+.stTabs [data-baseweb="tab-list"]::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px;
+}
+.stTabs [data-baseweb="tab"] { white-space: nowrap !important; flex-shrink: 0 !important; }
+
+/* ── Responsive rules ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 0.9rem !important;
+        padding-right: 0.9rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    /* Stack columns/cards vertically on small screens */
+    [data-testid="stHorizontalBlock"] {
+        flex-wrap: wrap !important;
+        row-gap: 0.6rem !important;
+    }
+    [data-testid="stHorizontalBlock"] > div[data-testid="stColumn"],
+    [data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* Full-width buttons on mobile */
+    .stButton > button,
+    .stDownloadButton > button,
+    [data-testid="stPopover"] button {
+        width: 100% !important;
+    }
+
+    /* Metric cards breathing room when stacked */
+    [data-testid="stMetric"] { margin-bottom: 0.5rem; }
+
+    /* Header sizing on small screens */
+    .app-header-title { font-size: 1.05rem !important; }
+    .app-header-icon { font-size: 1.6rem !important; }
+
+    /* Tabs slightly tighter on mobile */
+    .stTabs [data-baseweb="tab"] {
+        padding: 8px 12px !important;
+        font-size: 12px !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .block-container { padding-left: 1.2rem !important; padding-right: 1.2rem !important; }
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -243,24 +310,27 @@ for key, default in [
         st.session_state[key] = default
 
 # ════════════════════════════════════════════════════════════════════════════════
-# SIDEBAR
+# TOP MENU BAR — mobile-friendly replacement for st.sidebar
 # ════════════════════════════════════════════════════════════════════════════════
-with st.sidebar:
+header_col1, header_col2 = st.columns([3, 1])
 
-    # Logo / Header
+with header_col1:
     st.markdown("""
-    <div style="text-align:center;padding:1rem 0 1.5rem">
-        <div style="font-size:3rem;margin-bottom:0.4rem">🧠</div>
-        <div style="font-size:1.3rem;font-weight:900;background:linear-gradient(135deg,#818cf8,#a78bfa,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent">
-            SmartStudy AI
-        </div>
-        <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:2px;letter-spacing:1px">
-            EXAM PLANNER
+    <div class="app-header">
+        <div class="app-header-icon">🧠</div>
+        <div>
+            <div class="app-header-title">SmartStudy AI</div>
+            <div class="app-header-sub">EXAM PLANNER</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.divider()
+with header_col2:
+    menu_popover = st.popover("☰ Menu", use_container_width=True)
+
+subjects_ready: list[Subject] = []
+
+with menu_popover:
 
     # ── Input Mode ────────────────────────────────────────────────────────────
     st.markdown("#### 📥 Input Mode")
@@ -271,8 +341,6 @@ with st.sidebar:
     )
 
     st.divider()
-
-    subjects_ready: list[Subject] = []
 
     # ── FILE UPLOAD ───────────────────────────────────────────────────────────
     if input_mode == "📁 Upload .txt File":
@@ -447,6 +515,8 @@ Chemistry,10,Easy,2026-07-20""", language="text")
         </div>
         """, unsafe_allow_html=True)
 
+st.markdown("<hr style='margin:0.2rem 0 1.2rem'>", unsafe_allow_html=True)
+
 # ════════════════════════════════════════════════════════════════════════════════
 # MAIN CONTENT
 # ════════════════════════════════════════════════════════════════════════════════
@@ -485,7 +555,7 @@ if not st.session_state.generated:
 
     st.markdown("""
     <p style="text-align:center;color:rgba(255,255,255,0.2);font-size:0.85rem;margin-top:2rem">
-        👈 Use the sidebar to add subjects and generate your plan
+        👆 Tap the ☰ Menu button above to add subjects and generate your plan
     </p>
     """, unsafe_allow_html=True)
     st.stop()
