@@ -182,6 +182,54 @@ hr { border-color: rgba(255,255,255,0.07) !important; }
     font-weight: 600 !important;
     color: rgba(255,255,255,0.8) !important;
 }
+
+/* ── Mobile Sidebar Fix ── */
+@media (max-width: 768px) {
+    /* Sidebar always visible on mobile */
+    [data-testid="stSidebar"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        position: relative !important;
+        transform: none !important;
+    }
+    /* Hide the collapse arrow button */
+    [data-testid="stSidebarCollapseButton"] {
+        display: none !important;
+    }
+    /* Main content full width below sidebar */
+    .main .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    /* Tabs scroll horizontally on small screens */
+    .stTabs [data-baseweb="tab-list"] {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+    }
+    /* Stack columns on mobile */
+    [data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }
+    /* Metric cards smaller on mobile */
+    [data-testid="stMetric"] {
+        padding: 0.7rem 0.9rem !important;
+    }
+    /* Feature cards stack on mobile */
+    .stColumns {
+        flex-direction: column !important;
+    }
+}
+
+/* Hamburger icon always visible */
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    background: rgba(99,102,241,0.2) !important;
+    border: 1px solid rgba(99,102,241,0.4) !important;
+    border-radius: 10px !important;
+    color: #a5b4fc !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -457,7 +505,7 @@ if not st.session_state.generated:
 
     st.markdown("""
     <p style="text-align:center;color:rgba(255,255,255,0.2);font-size:0.85rem;margin-top:2rem">
-        👈 Use the sidebar to add subjects and generate your plan
+        👈 Desktop: Use the sidebar &nbsp;|&nbsp; 📱 Mobile: Tap <b style="color:rgba(99,102,241,0.7)">&gt;</b> arrow (top-left) to open menu
     </p>
     """, unsafe_allow_html=True)
     st.stop()
