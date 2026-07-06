@@ -32,42 +32,33 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Floating Sidebar Toggle Button (Mobile) ───────────────────────────────────
+# ── Mobile Sidebar Toggle ─────────────────────────────────────────────────────
 st.markdown("""
-<button id="sb-toggle" title="Toggle Menu" aria-label="Toggle Sidebar">☰</button>
+<style>
+#sb-toggle{
+position:fixed;top:14px;left:14px;z-index:999999;
+width:46px;height:46px;border:none;border-radius:12px;
+background:#6366f1;color:#fff;font-size:22px;cursor:pointer;
+box-shadow:0 4px 18px rgba(99,102,241,.45);
+}
+@media(min-width:769px){#sb-toggle{display:none;}}
+</style>
+<button id="sb-toggle">☰</button>
 <script>
-(function() {
-    var open = true;
-    var btn  = document.getElementById('sb-toggle');
-
-    function clickStreamlitToggle() {
-        // Try both collapsed and expanded state buttons
-        var target =
-            document.querySelector('[data-testid="stSidebarCollapseButton"] button') ||
-            document.querySelector('[data-testid="collapsedControl"] button') ||
-            document.querySelector('button[kind="header"]');
-        if (target) target.click();
-    }
-
-    function render() {
-        if (btn) btn.textContent = open ? '✕' : '☰';
-    }
-
-    function toggle() {
-        clickStreamlitToggle();
-        open = !open;
-        render();
-    }
-
-    // Init after Streamlit renders
-    setTimeout(function() {
-        btn = document.getElementById('sb-toggle');
-        if (btn) btn.addEventListener('click', toggle);
-        render();
-    }, 900);
-})();
+setTimeout(function(){
+ const b=document.getElementById("sb-toggle");
+ if(!b) return;
+ b.onclick=function(){
+   const t=document.querySelector('[data-testid="collapsedControl"] button')||
+           document.querySelector('[data-testid="stSidebarCollapseButton"] button')||
+           document.querySelector('[aria-label="Open sidebar"]')||
+           document.querySelector('[aria-label="Close sidebar"]');
+   if(t){t.click();}
+ };
+},800);
 </script>
-""", unsafe_allow_html=True)
+""",unsafe_allow_html=True)
+
 
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -219,79 +210,6 @@ hr { border-color: rgba(255,255,255,0.07) !important; }
     font-weight: 600 !important;
     color: rgba(255,255,255,0.8) !important;
 }
-
-/* ── Mobile Sidebar Fix ── */
-@media (max-width: 768px) {
-    /* Sidebar always visible on mobile */
-    [data-testid="stSidebar"] {
-        width: 100% !important;
-        min-width: 100% !important;
-        position: relative !important;
-        transform: none !important;
-    }
-    /* Hide the collapse arrow button */
-    [data-testid="stSidebarCollapseButton"] {
-        display: none !important;
-    }
-    /* Main content full width below sidebar */
-    .main .block-container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-    /* Tabs scroll horizontally on small screens */
-    .stTabs [data-baseweb="tab-list"] {
-        overflow-x: auto !important;
-        flex-wrap: nowrap !important;
-    }
-    /* Stack columns on mobile */
-    [data-testid="column"] {
-        width: 100% !important;
-        flex: 1 1 100% !important;
-        min-width: 100% !important;
-    }
-    /* Metric cards smaller on mobile */
-    [data-testid="stMetric"] {
-        padding: 0.7rem 0.9rem !important;
-    }
-    /* Feature cards stack on mobile */
-    .stColumns {
-        flex-direction: column !important;
-    }
-}
-
-/* Hamburger icon always visible */
-[data-testid="collapsedControl"] {
-    display: flex !important;
-    background: rgba(99,102,241,0.2) !important;
-    border: 1px solid rgba(99,102,241,0.4) !important;
-    border-radius: 10px !important;
-    color: #a5b4fc !important;
-}
-
-/* Custom floating toggle button */
-#sb-toggle {
-    position: fixed;
-    top: 14px;
-    left: 14px;
-    z-index: 99999;
-    width: 44px;
-    height: 44px;
-    border-radius: 13px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 20px rgba(99,102,241,0.5);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    font-size: 19px;
-}
-#sb-toggle:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 28px rgba(99,102,241,0.65);
-}
-#sb-toggle:active { transform: scale(0.94); }
 </style>
 """, unsafe_allow_html=True)
 
@@ -567,7 +485,7 @@ if not st.session_state.generated:
 
     st.markdown("""
     <p style="text-align:center;color:rgba(255,255,255,0.2);font-size:0.85rem;margin-top:2rem">
-        👈 Desktop: Use the sidebar &nbsp;|&nbsp; 📱 Mobile: Tap <b style="color:rgba(99,102,241,0.7)">&gt;</b> arrow (top-left) to open menu
+        👈 Use the sidebar to add subjects and generate your plan
     </p>
     """, unsafe_allow_html=True)
     st.stop()
