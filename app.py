@@ -32,6 +32,43 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# ── Floating Sidebar Toggle Button (Mobile) ───────────────────────────────────
+st.markdown("""
+<button id="sb-toggle" title="Toggle Menu" aria-label="Toggle Sidebar">☰</button>
+<script>
+(function() {
+    var open = true;
+    var btn  = document.getElementById('sb-toggle');
+
+    function clickStreamlitToggle() {
+        // Try both collapsed and expanded state buttons
+        var target =
+            document.querySelector('[data-testid="stSidebarCollapseButton"] button') ||
+            document.querySelector('[data-testid="collapsedControl"] button') ||
+            document.querySelector('button[kind="header"]');
+        if (target) target.click();
+    }
+
+    function render() {
+        if (btn) btn.textContent = open ? '✕' : '☰';
+    }
+
+    function toggle() {
+        clickStreamlitToggle();
+        open = !open;
+        render();
+    }
+
+    // Init after Streamlit renders
+    setTimeout(function() {
+        btn = document.getElementById('sb-toggle');
+        if (btn) btn.addEventListener('click', toggle);
+        render();
+    }, 900);
+})();
+</script>
+""", unsafe_allow_html=True)
+
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
@@ -230,6 +267,31 @@ hr { border-color: rgba(255,255,255,0.07) !important; }
     border-radius: 10px !important;
     color: #a5b4fc !important;
 }
+
+/* Custom floating toggle button */
+#sb-toggle {
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 99999;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(99,102,241,0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    font-size: 19px;
+}
+#sb-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 28px rgba(99,102,241,0.65);
+}
+#sb-toggle:active { transform: scale(0.94); }
 </style>
 """, unsafe_allow_html=True)
 
