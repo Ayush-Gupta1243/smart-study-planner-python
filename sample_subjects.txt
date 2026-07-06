@@ -1,0 +1,10 @@
+# Smart Study Planner - Sample Dataset
+# Format: SubjectName,TotalHours,Difficulty,ExamDate
+# Difficulty options: Easy | Medium | Hard
+
+Mathematics,20,Hard,2026-07-10
+Physics,15,Medium,2026-07-15
+Chemistry,10,Easy,2026-07-20
+Computer Science,18,Hard,2026-07-12
+English Literature,8,Easy,2026-07-25
+Biology,12,Medium,2026-07-18
