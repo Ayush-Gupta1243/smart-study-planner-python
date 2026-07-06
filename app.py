@@ -198,24 +198,16 @@ hr { border-color: rgba(255,255,255,0.07) !important; }
     margin-top: 1px;
 }
 
-/* Menu popover trigger button — match app button style */
-[data-testid="stPopover"] button {
-    background: rgba(255,255,255,0.05) !important;
-    border: 1px solid rgba(255,255,255,0.14) !important;
-    color: #e8e8ff !important;
-    border-radius: 12px !important;
-    font-weight: 700 !important;
+/* Expanders — styled as clean, modern cards (used by the ☰ Menu and its forms) */
+div[data-testid="stExpander"] {
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,0.03) !important;
+    margin-bottom: 0.75rem !important;
 }
-[data-testid="stPopover"] button:hover {
-    background: rgba(99,102,241,0.15) !important;
-    border-color: rgba(99,102,241,0.4) !important;
-}
-
-/* Popover panel content (the mobile-friendly menu) */
-[data-testid="stPopoverBody"] {
-    max-height: 82vh;
+div[data-testid="stExpanderDetails"] {
+    max-height: 75vh;
     overflow-y: auto;
-    min-width: 280px;
 }
 
 /* Tabs: allow horizontal scroll instead of squashing on narrow screens */
@@ -255,8 +247,7 @@ hr { border-color: rgba(255,255,255,0.07) !important; }
 
     /* Full-width buttons on mobile */
     .stButton > button,
-    .stDownloadButton > button,
-    [data-testid="stPopover"] button {
+    .stDownloadButton > button {
         width: 100% !important;
     }
 
@@ -312,25 +303,19 @@ for key, default in [
 # ════════════════════════════════════════════════════════════════════════════════
 # TOP MENU BAR — mobile-friendly replacement for st.sidebar
 # ════════════════════════════════════════════════════════════════════════════════
-header_col1, header_col2 = st.columns([3, 1])
-
-with header_col1:
-    st.markdown("""
-    <div class="app-header">
-        <div class="app-header-icon">🧠</div>
-        <div>
-            <div class="app-header-title">SmartStudy AI</div>
-            <div class="app-header-sub">EXAM PLANNER</div>
-        </div>
+st.markdown("""
+<div class="app-header">
+    <div class="app-header-icon">🧠</div>
+    <div>
+        <div class="app-header-title">SmartStudy AI</div>
+        <div class="app-header-sub">EXAM PLANNER</div>
     </div>
-    """, unsafe_allow_html=True)
-
-with header_col2:
-    menu_popover = st.popover("☰ Menu", use_container_width=True)
+</div>
+""", unsafe_allow_html=True)
 
 subjects_ready: list[Subject] = []
 
-with menu_popover:
+with st.expander("☰  Menu — Subjects & Study Preferences", expanded=not st.session_state.generated):
 
     # ── Input Mode ────────────────────────────────────────────────────────────
     st.markdown("#### 📥 Input Mode")
